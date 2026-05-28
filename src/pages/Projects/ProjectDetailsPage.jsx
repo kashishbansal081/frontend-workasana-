@@ -8,7 +8,7 @@ import { AppContext } from "../../context/AppContext";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
-  const { refersh, setRefresh ,setAddTaskModalOpen } = useContext(AppContext);
+  const { refersh, setAddTaskModalOpen } = useContext(AppContext);
   const { data: project } = useFetch(`${API.projects}/${id}`);
   const { data: tasks } = useFetch(API.tasks, refersh);
   const [statusFilter, setStatusFilter] = useState("all");

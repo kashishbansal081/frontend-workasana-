@@ -32,6 +32,8 @@ export default function TaskDetails() {
 
   useEffect(() => {
     fetchTask();
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const markAsCompleted = async () => {

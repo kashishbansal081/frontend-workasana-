@@ -11,7 +11,6 @@ import { AppContext } from "../../context/AppContext";
 export default function Dashboard() {
   const {
     refersh,
-    setRefresh,
     setAddTaskModalOpen,
     setAddProjectModalOpen,
   } = useContext(AppContext);

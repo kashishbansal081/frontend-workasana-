@@ -19,6 +19,8 @@ export default function SettingsPage() {
 
   useEffect(() => {
     fetchProjects();
+
+     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProjects = async () => {

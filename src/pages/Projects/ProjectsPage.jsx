@@ -6,7 +6,7 @@ import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 
 export default function ProjectsPage() {
-  const { setAddProjectModalOpen, addProjectModalOpen } = useContext(AppContext);
+  const { setAddProjectModalOpen } = useContext(AppContext);
   const { data: projects } = useFetch(
     API.projects
   );
