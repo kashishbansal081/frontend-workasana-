@@ -16,18 +16,8 @@ import SettingPage from "./pages/Settings/SettingPage";
 import TaskDetailsPage from "./pages/Tasks/TaskDetailsPage";
 
 function App() {
-  const {
-    addTaskModalOpen,
-    setAddTaskModalOpen,
-
-    addProjectModalOpen,
-    setAddProjectModalOpen,
-
-    refersh,
-    setRefresh,
-
-    isLoggedIn,
-  } = useContext(AppContext);
+  const { addTaskModalOpen, addProjectModalOpen, setRefresh, isLoggedIn } =
+    useContext(AppContext);
 
   const router = createBrowserRouter([
     {
