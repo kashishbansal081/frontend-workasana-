@@ -37,6 +37,9 @@ export default function TaskForm({ triggerRefresh }) {
         .then((res) => res.json())
         .then((data) => setMembers(data.members));
     }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [formData.team]);
 
   const handleChange = (e) => {
