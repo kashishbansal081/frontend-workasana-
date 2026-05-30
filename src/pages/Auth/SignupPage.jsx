@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import {API} from "../../services/Api";
-
+import { API } from "../../services/Api";
 
 const SignupPage = () => {
   const [userName, setUserName] = useState("");
@@ -36,14 +35,17 @@ const SignupPage = () => {
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         return response.json();
       })
       .then((result) => {
         toast.success("Signup successful!");
         console.log("User created:", result);
+
         setUserName("");
         setUserEmail("");
         setUserPassword("");
+
         navigate("/login");
       })
       .catch((error) => {
@@ -53,15 +55,26 @@ const SignupPage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex flex-column align-items-center justify-content-center w-50 mx-auto">
-
+    <div className="container mt-5 px-3">
+      <div
+        className="d-flex flex-column align-items-center justify-content-center mx-auto"
+        style={{ width: "100%", maxWidth: "500px" }}
+      >
         <h4 className="text-primary mb-3">workasana</h4>
-        <h3>Create your account</h3>
-        <p className="mt-2">Please enter your details to sign up</p>
-        <form className="w-50" onSubmit={submitHandler}>
+
+        <h3 className="text-center">Create your account</h3>
+
+        <p className="mt-2 text-center">
+          Please enter your details to sign up
+        </p>
+
+        <form
+          className="w-100"
+          onSubmit={submitHandler}
+        >
           <label htmlFor="name">Name:</label>
           <br />
+
           <input
             type="text"
             id="name"
@@ -72,9 +85,12 @@ const SignupPage = () => {
             onChange={(e) => setUserName(e.target.value)}
             required
           />
+
           <br />
+
           <label htmlFor="email">Email:</label>
           <br />
+
           <input
             type="email"
             id="email"
@@ -85,9 +101,12 @@ const SignupPage = () => {
             onChange={(e) => setUserEmail(e.target.value)}
             required
           />
+
           <br />
+
           <label htmlFor="password">Password:</label>
           <br />
+
           <input
             type="password"
             id="password"
@@ -98,12 +117,18 @@ const SignupPage = () => {
             onChange={(e) => setUserPassword(e.target.value)}
             required
           />
+
           <br />
+
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Sign Up
           </button>
         </form>
-        <Link to="/login" className="btn btn-link mt-3 text-decoration-none">
+
+        <Link
+          to="/login"
+          className="btn btn-link mt-3 text-decoration-none text-center"
+        >
           Already have an account? Login
         </Link>
       </div>

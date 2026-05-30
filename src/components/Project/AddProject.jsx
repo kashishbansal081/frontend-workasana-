@@ -4,10 +4,12 @@ import { API } from "../../services/Api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 
-export default function AddProject() {
+export default function AddProject({ triggerRefresh }) {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-  const { setAddProjectModalOpen, triggerRefresh } = useContext(AppContext);
+  const { setAddProjectModalOpen } = useContext(AppContext);
+  const token = localStorage.getItem("token");
+
 
   const createProjectHandler = (e) => {
     e.preventDefault();
@@ -15,7 +17,8 @@ export default function AddProject() {
     fetch(API.projects, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
       },
       body: JSON.stringify({
         name: projectName,

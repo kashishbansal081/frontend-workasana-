@@ -1,0 +1,384 @@
+.settings-page {
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.settings-content {
+  padding-left: 320px;
+  padding-right: 40px;
+  padding-top: 30px;
+  padding-bottom: 40px;
+  margin-left: 2rem;
+}
+
+.settings-header h1 {
+  color: #0f172a;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+.settings-header p {
+  color: #64748b;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+.settings-card {
+  border-radius: 24px;
+  background: #ffffff;
+  padding: 35px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  max-width: 1200px;
+}
+
+.settings-top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.settings-top-header h3 {
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 6px;
+}
+
+.settings-top-header p {
+  color: #64748b;
+  margin-bottom: 0;
+}
+
+.project-count-badge {
+  background: #eef2ff;
+  color: #4338ca;
+  padding: 10px 18px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.settings-loading {
+  padding: 40px 0;
+  text-align: center;
+  color: #6b7280;
+}
+
+.settings-projects {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.settings-project-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.settings-project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  flex-wrap: wrap;
+}
+
+.settings-project-info {
+  flex: 1;
+  min-width: 240px;
+}
+
+.settings-project-info h5 {
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.settings-project-info p {
+  color: #6b7280;
+  margin-bottom: 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.settings-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.view-task-btn {
+  background: #e0e7ff !important;
+  color: #3730a3 !important;
+  border-radius: 10px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+  border: none !important;
+}
+
+.delete-project-btn {
+  border-radius: 10px !important;
+  padding: 8px 16px !important;
+  font-size: 14px !important;
+}
+
+.tasks-section {
+  padding: 20px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tasks-section h6 {
+  font-weight: 600;
+  margin-bottom: 18px;
+  color: #111827;
+}
+
+.tasks-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.task-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 18px;
+  background: #f9fafb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.task-item h6 {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #111827;
+}
+
+.task-item p {
+  margin-bottom: 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.delete-task-btn {
+  border-radius: 10px !important;
+  padding: 8px 14px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.empty-task-text {
+  color: #6b7280;
+  margin-bottom: 0;
+}
+
+
+.logout-section {
+  margin-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.logout-btn {
+  border-radius: 12px !important;
+  padding: 10px 24px !important;
+  font-weight: 600 !important;
+  font-size: 15px !important;
+}
+
+
+.custom-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  padding: 20px;
+}
+
+.custom-modal {
+  background: white;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 24px;
+  padding: 28px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  animation: modalPop 0.2s ease;
+}
+
+.custom-modal h4 {
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.custom-modal p {
+  color: #6b7280;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+.custom-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@keyframes modalPop {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
+   Responsive
+========================= */
+
+@media (min-width: 1700px) {
+  .settings-content {
+    padding-left: 380px;
+    padding-right: 120px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .settings-content {
+    padding-left: 290px;
+    padding-right: 24px;
+    margin-left: 0;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 992px) {
+  .settings-content {
+    padding-left: 260px;
+    padding-right: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-left: 0;
+  }
+
+  .settings-card {
+    padding: 22px;
+  }
+
+  .settings-project-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .settings-project-info {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .settings-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 768px) {
+  .settings-content {
+    padding: 16px;
+    margin-left: 0;
+  }
+
+  .settings-header h1 {
+    font-size: 26px;
+  }
+
+  .settings-card {
+    padding: 18px;
+    border-radius: 18px;
+  }
+
+  .settings-top-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-count-badge {
+    width: fit-content;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .settings-actions button {
+    width: 100%;
+  }
+
+  .task-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .delete-task-btn {
+    width: 100%;
+  }
+
+  .logout-section {
+    justify-content: stretch;
+  }
+
+  .logout-btn {
+    width: 100%;
+  }
+
+  .custom-modal {
+    padding: 22px;
+    border-radius: 20px;
+  }
+
+  .custom-modal-actions {
+    flex-direction: column;
+  }
+
+  .custom-modal-actions button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .settings-content {
+    padding: 12px;
+  }
+
+  .settings-header h1 {
+    font-size: 22px;
+  }
+
+  .settings-header p {
+    font-size: 14px;
+  }
+
+  .settings-card {
+    padding: 16px;
+  }
+
+  .project-count-badge {
+    width: 100%;
+    text-align: center;
+  }
+}

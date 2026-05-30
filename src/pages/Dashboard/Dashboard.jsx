@@ -14,7 +14,11 @@ export default function Dashboard() {
     setAddTaskModalOpen,
     setAddProjectModalOpen,
   } = useContext(AppContext);
+
+  console.log('github testing')
+
   const { data } = useFetch(API.projects, refersh);
+
   const { data: taskData } = useFetch(API.tasks, refersh);
 
   const [projectFilter, setProjectFilter] = useState("all");
@@ -101,7 +105,9 @@ export default function Dashboard() {
             </div>
 
             <div className="row mt-4">
-              {filteredData.length > 0 ? (
+              {!data ? (
+                <p className="mt-3">Loading projects...</p>
+              ) : filteredData.length > 0 ? (
                 filteredData.map((project) => (
                   <div
                     className="col-12 col-sm-6 col-xl-4 mb-4"
@@ -150,9 +156,14 @@ export default function Dashboard() {
             </div>
 
             <div className="row mt-4">
-              {selectFilteredTasks.length > 0 ? (
+              {!taskData ? (
+                <p className="mt-3">Loading tasks...</p>
+              ) : selectFilteredTasks.length > 0 ? (
                 selectFilteredTasks.map((task) => (
-                  <div className="col-12 col-sm-6 col-xl-4 mb-4" key={task._id}>
+                  <div
+                    className="col-12 col-sm-6 col-xl-4 mb-4"
+                    key={task._id}
+                  >
                     <Link to={`/task/${task._id}`} className="link">
                       <div className="dashboard-card-wrapper">
                         <TaskCard task={task} />

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import {API} from "../../services/Api";
+import { API } from "../../services/Api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 
@@ -53,14 +53,26 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container mt-5">
-      <div className="d-flex flex-column align-items-center justify-content-center w-50 mx-auto">
+    <div className="container mt-5 px-3">
+      <div
+        className="d-flex flex-column align-items-center justify-content-center mx-auto"
+        style={{ width: "100%", maxWidth: "500px" }}
+      >
         <h4 className="text-primary mb-3">workasana</h4>
-        <h3>Log in to your account</h3>
-        <p className="mt-2">Please enter your credentials</p>
-        <form className="w-50" onSubmit={loginHandler}>
+
+        <h3 className="text-center">Log in to your account</h3>
+
+        <p className="mt-2 text-center">
+          Please enter your credentials
+        </p>
+
+        <form
+          className="w-100"
+          onSubmit={loginHandler}
+        >
           <label htmlFor="email">Email:</label>
           <br />
+
           <input
             type="email"
             id="email"
@@ -71,9 +83,12 @@ const LoginPage = () => {
             onChange={(e) => setUserEmail(e.target.value)}
             required
           />
+
           <br />
+
           <label htmlFor="password">Password:</label>
           <br />
+
           <input
             type="password"
             id="password"
@@ -84,12 +99,18 @@ const LoginPage = () => {
             onChange={(e) => setUserPassword(e.target.value)}
             required
           />
+
           <br />
+
           <button type="submit" className="btn btn-primary w-100 mt-3">
             Login
           </button>
         </form>
-        <Link to="/signup" className="btn btn-link mt-3 text-decoration-none">
+
+        <Link
+          to="/signup"
+          className="btn btn-link mt-3 text-decoration-none text-center"
+        >
           Don't have an account? Sign Up
         </Link>
       </div>

@@ -1,12 +1,18 @@
 import { useEffect, useState } from "react";
 import SideBar from "../../components/Layout/SideBar";
 import "./teams.css";
-import {API} from "../../services/Api";
+import { API } from "../../services/Api";
 
 export default function TeamsPage() {
   const [teams, setTeams] = useState([]);
   const [users, setUsers] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
+
+  const [loadingTeams, setLoadingTeams] =
+    useState(true);
+
+  const [loadingTeamDetails, setLoadingTeamDetails] =
+    useState(false);
 
   const [newTeamModalOpen, setNewTeamModalOpen] =
     useState(false);
@@ -27,29 +33,27 @@ export default function TeamsPage() {
 
   const fetchTeams = async () => {
     try {
-      const res = await fetch(
-        API.teams,
-        {
-          headers: authHeaders,
-        },
-      );
+      setLoadingTeams(true);
+
+      const res = await fetch(API.teams, {
+        headers: authHeaders,
+      });
 
       const data = await res.json();
 
       setTeams(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingTeams(false);
     }
   };
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch(
-        API.users,
-        {
-          headers: authHeaders,
-        },
-      );
+      const res = await fetch(API.users, {
+        headers: authHeaders,
+      });
 
       const data = await res.json();
 
@@ -63,11 +67,13 @@ export default function TeamsPage() {
     fetchTeams();
     fetchUsers();
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleTeamClick = async (id) => {
     try {
+      setLoadingTeamDetails(true);
+
       const res = await fetch(
         `${API.teams}/${id}`,
         {
@@ -80,6 +86,8 @@ export default function TeamsPage() {
       setSelectedTeam(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoadingTeamDetails(false);
     }
   };
 
@@ -102,7 +110,9 @@ export default function TeamsPage() {
   };
 
   const removeMember = (userId) => {
-    const filtered = members.filter((id) => id !== userId);
+    const filtered = members.filter(
+      (id) => id !== userId,
+    );
 
     setMembers(filtered);
   };
@@ -119,21 +129,18 @@ export default function TeamsPage() {
         return;
       }
 
-      const response = await fetch(
-        API.teams,
-        {
-          method: "POST",
+      const response = await fetch(API.teams, {
+        method: "POST",
 
-          headers: authHeaders,
+        headers: authHeaders,
 
-          body: JSON.stringify({
-            name: teamName,
-            description,
-            owner,
-            members,
-          }),
-        },
-      );
+        body: JSON.stringify({
+          name: teamName,
+          description,
+          owner,
+          members,
+        }),
+      });
 
       const data = await response.json();
 
@@ -192,7 +199,9 @@ export default function TeamsPage() {
     }
   };
 
-  const removeExistingMember = async (memberId) => {
+  const removeExistingMember = async (
+    memberId,
+  ) => {
     try {
       const response = await fetch(
         `${API.teams}/${selectedTeam._id}/members/${memberId}`,
@@ -242,7 +251,11 @@ export default function TeamsPage() {
               </button>
             </div>
 
-            {teams.length === 0 ? (
+            {loadingTeams ? (
+              <div className="teams-empty">
+                <h3>Loading teams...</h3>
+              </div>
+            ) : teams.length === 0 ? (
               <div className="teams-empty">
                 <h3>No Teams Found</h3>
 
@@ -279,6 +292,8 @@ export default function TeamsPage() {
               </div>
             )}
           </>
+        ) : loadingTeamDetails ? (
+          <h3>Loading team details...</h3>
         ) : (
           <>
             <button

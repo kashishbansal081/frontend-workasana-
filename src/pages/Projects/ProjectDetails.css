@@ -1,0 +1,165 @@
+.project-details-wrapper {
+  overflow-x: hidden;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+.project-details-content {
+  margin-left: 23%;
+  padding: 28px;
+}
+
+.project-details-header {
+  margin-bottom: 24px;
+}
+
+.project-details-header h3 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.project-details-header p {
+  color: #6b7280;
+  margin-bottom: 0;
+  line-height: 1.7;
+}
+
+.project-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.sorting-buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.project-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.project-toolbar-actions select {
+  min-width: 220px;
+  height: 40px;
+}
+
+.new-task-btn {
+  height: 40px;
+  padding: 0 18px !important;
+  white-space: nowrap;
+  border-radius: 10px !important;
+}
+
+.project-table-wrapper {
+  background: white;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.table {
+  margin-bottom: 0 !important;
+}
+
+.table th {
+  white-space: nowrap;
+}
+
+
+@media (max-width: 992px) {
+  .project-details-content {
+    margin-left: 0;
+    padding: 22px;
+  }
+
+  .project-details-header h3 {
+    font-size: 28px;
+  }
+
+  .project-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-toolbar-actions {
+    width: 100%;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .project-details-content {
+    padding: 16px;
+  }
+
+  .project-details-header h3 {
+    font-size: 24px;
+  }
+
+  .project-details-header p {
+    font-size: 14px;
+  }
+
+  .project-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sorting-buttons {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .sorting-buttons button {
+    width: 100%;
+  }
+
+  .project-toolbar-actions {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .project-toolbar-actions select {
+    width: 100%;
+  }
+
+  .new-task-btn {
+    width: 100%;
+  }
+
+  .table th,
+  .table td {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+   .add-task-footer-btn{
+    width: 100%;
+  }
+}
+
+@media (max-width: 576px) {
+  .project-details-content {
+    padding: 12px;
+  }
+
+  .add-task-footer-btn{
+    width: 100%;
+  }
+
+  .project-details-header h3 {
+    font-size: 22px;
+  }
+}

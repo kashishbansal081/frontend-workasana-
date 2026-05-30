@@ -2,12 +2,25 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Sidebar from "../../components/Layout/SideBar";
 import { API } from "../../services/Api";
+import { useNavigate } from "react-router-dom";
+import "./Setting.css";
 
 export default function SettingsPage() {
   const [projects, setProjects] = useState([]);
   const [expandedProject, setExpandedProject] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  // REUSABLE MODAL
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  const [modalData, setModalData] = useState({
+    title: "",
+    message: "",
+    action: null,
+  });
+
+  const navigate = useNavigate();
 
   const token = localStorage.getItem("token");
 
@@ -20,7 +33,7 @@ export default function SettingsPage() {
   useEffect(() => {
     fetchProjects();
 
-     // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchProjects = async () => {
@@ -41,7 +54,6 @@ export default function SettingsPage() {
     }
   };
 
-  // FETCH TASKS
   const fetchTasks = async (projectId) => {
     try {
       const response = await axios.get(
@@ -57,14 +69,7 @@ export default function SettingsPage() {
     }
   };
 
-  // DELETE PROJECT
   const handleDeleteProject = async (projectId) => {
-    const confirmDelete = window.confirm(
-      "Deleting this project will also delete all related tasks.",
-    );
-
-    if (!confirmDelete) return;
-
     try {
       await axios.delete(`${API.projects}/${projectId}`, config);
 
@@ -81,14 +86,7 @@ export default function SettingsPage() {
     }
   };
 
-  // DELETE TASK
   const handleDeleteTask = async (taskId) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this task?",
-    );
-
-    if (!confirmDelete) return;
-
     try {
       await axios.delete(`${API.tasks}/${taskId}`, config);
 
@@ -98,269 +96,212 @@ export default function SettingsPage() {
     }
   };
 
-  if (loading) {
-    return (
-      <div style={{ padding: "40px" }}>
-        <h2>Loading projects...</h2>
-      </div>
-    );
-  }
+  // OPEN MODAL
+  const openConfirmModal = ({ title, message, action }) => {
+    setModalData({
+      title,
+      message,
+      action,
+    });
+
+    setShowConfirmModal(true);
+  };
+
+  // CLOSE MODAL
+  const closeConfirmModal = () => {
+    setShowConfirmModal(false);
+  };
+
+// LOGOUT
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+
+    navigate("/login");
+  };
 
   return (
-    <div
-      style={{
-        background: "#f8fafc",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="settings-page">
       <Sidebar />
 
-      <div
-        style={{
-          paddingLeft: "320px",
-          paddingTop: "30px",
-          paddingRight: "40px",
-          paddingBottom: "40px",
-          marginLeft: "2rem",
-        }}
-      >
-        <div className="mb-4">
-          <h1
-            style={{
-              color: "#0f172a",
-              fontSize: "32px",
-            }}
-          >
-            Settings
-          </h1>
+      <div className="settings-content">
+        {/* HEADER */}
+        <div className="settings-header mb-4">
+          <h1>Settings</h1>
 
-          <p
-            style={{
-              color: "#64748b",
-              marginTop: "8px",
-              fontSize: "15px",
-            }}
-          >
-            Manage projects and tasks from your workspace.
-          </p>
+          <p>Manage projects and tasks from your workspace.</p>
         </div>
 
-        {/* MAIN CARD */}
-        <div
-          className="card border-0"
-          style={{
-            borderRadius: "24px",
-            background: "#ffffff",
-            padding: "35px",
-            boxShadow: "0 10px 30px rgba(15, 23, 42, 0.06)",
-            maxWidth: "1200px",
-          }}
-        >
-          {/* TOP HEADER */}
-          <div className="d-flex justify-content-between align-items-center mb-4">
+        {/* CARD */}
+        <div className="card border-0 settings-card">
+          {/* TOP */}
+          <div className="settings-top-header">
             <div>
-              <h3
-                style={{
-                  fontWeight: "700",
-                  color: "#0f172a",
-                  marginBottom: "6px",
-                }}
-              >
-                Project Management
-              </h3>
+              <h3>Project Management</h3>
 
-              <p
-                style={{
-                  color: "#64748b",
-                  marginBottom: "0",
-                }}
-              >
-                Delete projects or individual tasks.
-              </p>
+              <p>Delete projects or individual tasks.</p>
             </div>
 
-            <div
-              style={{
-                background: "#eef2ff",
-                color: "#4338ca",
-                padding: "10px 18px",
-                borderRadius: "12px",
-                fontWeight: "600",
-                fontSize: "14px",
-              }}
-            >
+            <div className="project-count-badge">
               {projects.length} Projects
             </div>
           </div>
 
-          {/* PROJECTS */}
-          <div className="d-flex flex-column gap-4">
-            {projects.map((project) => (
-              <div
-                key={project._id}
-                style={{
-                  border: "1px solid #e5e7eb",
-                  borderRadius: "18px",
-                  overflow: "hidden",
-                  background: "#fafafa",
-                }}
-              >
-                {/* PROJECT HEADER */}
-                <div
-                  className="d-flex justify-content-between align-items-center"
-                  style={{
-                    padding: "22px",
-                  }}
-                >
-                  <div style={{ maxWidth: "70%" }}>
-                    <h5
-                      style={{
-                        fontWeight: "700",
-                        marginBottom: "8px",
-                        color: "#111827",
-                      }}
-                    >
-                      {project.name}
-                    </h5>
-
-                    <p
-                      style={{
-                        color: "#6b7280",
-                        marginBottom: "0",
-                        fontSize: "14px",
-                        lineHeight: "1.5",
-                      }}
-                    >
-                      {project.description}
-                    </p>
-                  </div>
-
-                  {/* ACTIONS */}
-                  <div className="d-flex gap-3">
-                    <button
-                      className="btn"
-                      onClick={() => {
-                        if (expandedProject === project._id) {
-                          setExpandedProject(null);
-                          setTasks([]);
-                        } else {
-                          fetchTasks(project._id);
-                        }
-                      }}
-                      style={{
-                        background: "#e0e7ff",
-                        color: "#3730a3",
-                        borderRadius: "10px",
-                        padding: "8px 16px",
-                        fontSize: "14px",
-                        border: "none",
-                      }}
-                    >
-                      {expandedProject === project._id
-                        ? "Hide Tasks"
-                        : "View Tasks"}
-                    </button>
-
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDeleteProject(project._id)}
-                      style={{
-                        borderRadius: "10px",
-                        padding: "8px 16px",
-                        fontSize: "14px",
-                      }}
-                    >
-                      Delete Project
-                    </button>
-                  </div>
-                </div>
-
-                {/* TASKS */}
-                {expandedProject === project._id && (
+          {/* LOADING */}
+          {loading ? (
+            <div className="settings-loading">
+              <p>Loading...</p>
+            </div>
+          ) : (
+            <div className="settings-projects">
+              {projects.length > 0 ? (
+                projects.map((project) => (
                   <div
-                    style={{
-                      padding: "20px",
-                      background: "#ffffff",
-                      borderTop: "1px solid #e5e7eb",
-                    }}
+                    key={project._id}
+                    className="settings-project-item"
                   >
-                    <h6
-                      style={{
-                        fontWeight: "600",
-                        marginBottom: "18px",
-                        color: "#111827",
-                      }}
-                    >
-                      Project Tasks
-                    </h6>
+                    {/* PROJECT HEADER */}
+                    <div className="settings-project-header">
+                      <div className="settings-project-info">
+                        <h5>{project.name}</h5>
 
-                    {tasks.length > 0 ? (
-                      <div className="d-flex flex-column gap-3">
-                        {tasks.map((task) => (
-                          <div
-                            key={task._id}
-                            className="d-flex justify-content-between align-items-center"
-                            style={{
-                              border: "1px solid #e5e7eb",
-                              borderRadius: "14px",
-                              padding: "18px",
-                              background: "#f9fafb",
-                            }}
-                          >
-                            <div>
-                              <h6
-                                style={{
-                                  fontWeight: "600",
-                                  marginBottom: "6px",
-                                  color: "#111827",
-                                }}
-                              >
-                                {task.name}
-                              </h6>
-
-                              <p
-                                style={{
-                                  marginBottom: "0",
-                                  color: "#6b7280",
-                                  fontSize: "14px",
-                                }}
-                              >
-                                Status: {task.status}
-                              </p>
-                            </div>
-
-                            <button
-                              className="btn btn-outline-danger"
-                              onClick={() => handleDeleteTask(task._id)}
-                              style={{
-                                borderRadius: "10px",
-                                padding: "8px 14px",
-                                fontSize: "14px",
-                                fontWeight: "600",
-                              }}
-                            >
-                              Delete Task
-                            </button>
-                          </div>
-                        ))}
+                        <p>{project.description}</p>
                       </div>
-                    ) : (
-                      <p
-                        style={{
-                          color: "#6b7280",
-                          marginBottom: "0",
-                        }}
-                      >
-                        No tasks available for this project.
-                      </p>
+
+                      {/* ACTIONS */}
+                      <div className="settings-actions">
+                        <button
+                          className="btn view-task-btn"
+                          onClick={() => {
+                            if (expandedProject === project._id) {
+                              setExpandedProject(null);
+                              setTasks([]);
+                            } else {
+                              fetchTasks(project._id);
+                            }
+                          }}
+                        >
+                          {expandedProject === project._id
+                            ? "Hide Tasks"
+                            : "View Tasks"}
+                        </button>
+
+                        <button
+                          className="btn btn-danger delete-project-btn"
+                          onClick={() =>
+                            openConfirmModal({
+                              title: "Delete Project",
+                              message:
+                                "Deleting this project will also delete all related tasks.",
+                              action: () =>
+                                handleDeleteProject(project._id),
+                            })
+                          }
+                        >
+                          Delete Project
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* TASKS */}
+                    {expandedProject === project._id && (
+                      <div className="tasks-section">
+                        <h6>Project Tasks</h6>
+
+                        {tasks.length > 0 ? (
+                          <div className="tasks-list">
+                            {tasks.map((task) => (
+                              <div
+                                key={task._id}
+                                className="task-item"
+                              >
+                                <div className="task-info">
+                                  <h6>{task.name}</h6>
+
+                                  <p>Status: {task.status}</p>
+                                </div>
+
+                                <button
+                                  className="btn btn-outline-danger delete-task-btn"
+                                  onClick={() =>
+                                    openConfirmModal({
+                                      title: "Delete Task",
+                                      message:
+                                        "Are you sure you want to delete this task?",
+                                      action: () =>
+                                        handleDeleteTask(task._id),
+                                    })
+                                  }
+                                >
+                                  Delete Task
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <p className="empty-task-text">
+                            No tasks available for this project.
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
+                ))
+              ) : (
+                <p className="empty-task-text">
+                  No projects found.
+                </p>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* LOGOUT */}
+        <div className="logout-section">
+          <button
+            className="btn btn-danger logout-btn"
+            onClick={() =>
+              openConfirmModal({
+                title: "Logout",
+                message: "Are you sure you want to logout?",
+                action: handleLogout,
+              })
+            }
+          >
+            Logout
+          </button>
         </div>
       </div>
+
+      {/* REUSABLE MODAL */}
+      {showConfirmModal && (
+        <div className="custom-modal-overlay">
+          <div className="custom-modal">
+            <h4>{modalData.title}</h4>
+
+            <p>{modalData.message}</p>
+
+            <div className="custom-modal-actions">
+              <button
+                className="btn btn-light"
+                onClick={closeConfirmModal}
+              >
+                Cancel
+              </button>
+
+              <button
+                className="btn btn-danger"
+                onClick={() => {
+                  modalData.action();
+
+                  closeConfirmModal();
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
