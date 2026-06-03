@@ -1,36 +1,38 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 
 const useFetch = (url, refreshTrigger) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-
     const fetchData = () => {
+      const token = localStorage.getItem("token");
 
-    const token = localStorage.getItem("token");
+      const headers = {
+        "Content-Type": "application/json",
+      };
 
-    const headers = {
-      "Content-Type": "application/json",
-    };
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
-    fetch(url, { headers })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then((result) => {
-        setData(result);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-
+      fetch(url, { headers })
+        .then((response) => {
+          if (response.status === 401) {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+            return null;
+          }
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((result) => {
+          setData(result);
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
     };
 
     fetchData();

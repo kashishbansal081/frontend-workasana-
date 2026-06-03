@@ -3,15 +3,19 @@ import { useNavigate, useParams } from "react-router-dom";
 import SideBar from "../../components/Layout/SideBar";
 import "./TaskDetailsPage.css";
 import { API } from "../../services/Api";
+import { toast } from "react-toastify";
 
 export default function TaskDetails() {
   const { id } = useParams();
-
   const navigate = useNavigate();
 
   const [task, setTask] = useState(null);
-
   const [loading, setLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [showReopenModal, setShowReopenModal] = useState(false);
+  const [pendingStatus, setPendingStatus] = useState("");
+
+  const token = localStorage.getItem("token");
 
   const fetchTask = async () => {
     try {
@@ -19,13 +23,14 @@ export default function TaskDetails() {
 
       const response = await fetch(`${API.tasks}/${id}`, {
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
       const data = await response.json();
 
       setTask(data);
+      setSelectedStatus(data.status);
     } catch (err) {
       console.error(err);
     } finally {
@@ -39,45 +44,75 @@ export default function TaskDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  const markAsCompleted = async () => {
+  const updateStatus = async (statusToUpdate = selectedStatus) => {
     try {
       const response = await fetch(`${API.tasks}/${id}`, {
         method: "PUT",
-
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-
         body: JSON.stringify({
-          status: "Completed",
+          status: statusToUpdate,
         }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        alert(data.error || "Failed to update task");
+        toast.error(data.error || "Failed to update task");
         return;
       }
 
+      toast.success("Task status updated successfully");
       fetchTask();
     } catch (err) {
       console.error(err);
+      toast.error("Failed to update task");
     }
   };
 
-  const calculateRemainingDays = (dueDate) => {
+  const handleStatusUpdate = () => {
+    if (task.status === "Completed" && selectedStatus !== "Completed") {
+      setPendingStatus(selectedStatus);
+      setShowReopenModal(true);
+      return;
+    }
+
+    updateStatus(selectedStatus);
+  };
+
+  const getDueDate = () => {
+    if (!task?.createdAt || !task?.timeToComplete) {
+      return null;
+    }
+
+    return new Date(
+      new Date(task.createdAt).getTime() +
+        task.timeToComplete * 24 * 60 * 60 * 1000,
+    );
+  };
+
+  const calculateRemainingDays = () => {
+    const dueDate = getDueDate();
+
     if (!dueDate) return "No Due Date";
 
     const today = new Date();
 
-    const due = new Date(dueDate);
-
-    const diffTime = due - today;
-
-    const diffDays = Math.ceil(
-      diffTime / (1000 * 60 * 60 * 24),
+    const todayOnly = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
     );
+
+    const dueOnly = new Date(
+      dueDate.getFullYear(),
+      dueDate.getMonth(),
+      dueDate.getDate(),
+    );
+
+    const diffDays = Math.round((dueOnly - todayOnly) / (1000 * 60 * 60 * 24));
 
     if (diffDays < 0) return "Overdue";
 
@@ -94,34 +129,33 @@ export default function TaskDetails() {
 
       <div className="task-details-content">
         {loading ? (
-          <h2>Loading Task...</h2>
+          <div className="task-loader">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+
+            <p className="mt-3">Loading Task Details...</p>
+          </div>
         ) : (
           <>
             <div className="task-details-header">
               <div>
-                <h1>{task.title}</h1>
+                <h1>{task.name}</h1>
 
-                <p className="task-subtitle">
-                  Task Details & Progress
-                </p>
+                <p className="task-subtitle">Task Details & Progress</p>
               </div>
 
-              <button
-                className="task-back-btn"
-                onClick={() => navigate(-1)}
-              >
+              <button className="task-back-btn" onClick={() => navigate(-1)}>
                 ← Back
               </button>
             </div>
 
             <div className="task-main-card">
               <div className="task-top-section">
-                <div className="task-status-badge">
-                  {task.status}
-                </div>
+                <div className="task-status-badge">{task.status}</div>
 
                 <div className="task-time-remaining">
-                  {calculateRemainingDays(task.dueDate)}
+                  {calculateRemainingDays()}
                 </div>
               </div>
 
@@ -129,17 +163,19 @@ export default function TaskDetails() {
                 <div className="task-info-card">
                   <p className="task-label">Project</p>
 
-                  <h3>
-                    {task.project?.name || "No Project"}
-                  </h3>
+                  <h3>{task.project?.name || "No Project"}</h3>
+                </div>
+
+                <div className="task-info-card">
+                  <p className="task-label">Priority</p>
+
+                  <h3>{task.priority || "Low"}</h3>
                 </div>
 
                 <div className="task-info-card">
                   <p className="task-label">Team</p>
 
-                  <h3>
-                    {task.team?.name || "No Team"}
-                  </h3> 
+                  <h3>{task.team?.name || "No Team"}</h3>
                 </div>
 
                 <div className="task-info-card">
@@ -147,9 +183,7 @@ export default function TaskDetails() {
 
                   <h3>
                     {task.owners?.length > 0
-                      ? task.owners
-                          .map((owner) => owner.name)
-                          .join(", ")
+                      ? task.owners.map((owner) => owner.name).join(", ")
                       : "No Owners"}
                   </h3>
                 </div>
@@ -160,10 +194,7 @@ export default function TaskDetails() {
                   <div className="task-tags">
                     {task.tags?.length > 0 ? (
                       task.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="task-tag"
-                        >
+                        <span key={index} className="task-tag">
                           {tag}
                         </span>
                       ))
@@ -177,33 +208,100 @@ export default function TaskDetails() {
                   <p className="task-label">Due Date</p>
 
                   <h3>
-                    {task.dueDate
-                      ? new Date(
-                          task.dueDate,
-                        ).toLocaleDateString()
+                    {getDueDate()
+                      ? getDueDate().toLocaleDateString("en-IN", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        })
                       : "No Due Date"}
                   </h3>
                 </div>
               </div>
 
-              <div className="task-description-box">
-                <p className="task-label">
-                  Description
-                </p>
+              <div className="task-status-update">
+                <label className="task-label">Update Status</label>
 
-                <p>
-                  {task.description ||
-                    "No Description Added"}
-                </p>
+                <select
+                  className="task-status-select"
+                  value={selectedStatus}
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                >
+                  <option value="To Do">To Do</option>
+
+                  <option value="In Progress">In Progress</option>
+
+                  <option value="Blocked">Blocked</option>
+
+                  <option value="Completed">Completed</option>
+                </select>
+
+                <button
+                  type="button"
+                  className="task-complete-btn"
+                  onClick={handleStatusUpdate}
+                >
+                  Update Status
+                </button>
               </div>
 
-              {task.status !== "Completed" && (
-                <button
-                  className="task-complete-btn"
-                  onClick={markAsCompleted}
-                >
-                  Mark as Complete
-                </button>
+              {getDueDate() &&
+                getDueDate() < new Date() &&
+                task.status !== "Completed" && (
+                  <div className="task-overdue-note">
+                    This task is overdue. If work is still ongoing, consider
+                    updating its timeline from an Edit Task feature in the
+                    future.
+                  </div>
+                )}
+
+              {showReopenModal && (
+                <>
+                  <div className="modal fade show d-block" tabIndex="-1">
+                    <div className="modal-dialog modal-dialog-centered">
+                      <div className="modal-content">
+                        <div className="modal-header">
+                          <h5 className="modal-title">Reopen Task</h5>
+
+                          <button
+                            type="button"
+                            className="btn-close"
+                            onClick={() => setShowReopenModal(false)}
+                          />
+                        </div>
+
+                        <div className="modal-body">
+                          <p>This task was previously marked as Completed.</p>
+
+                          <p>The due date will remain unchanged.</p>
+
+                          <p>Are you sure you want to reopen this task?</p>
+                        </div>
+
+                        <div className="modal-footer">
+                          <button
+                            className="btn btn-secondary"
+                            onClick={() => setShowReopenModal(false)}
+                          >
+                            Cancel
+                          </button>
+
+                          <button
+                            className="btn btn-primary"
+                            onClick={() => {
+                              updateStatus(pendingStatus);
+                              setShowReopenModal(false);
+                            }}
+                          >
+                            Reopen Task
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="modal-backdrop fade show"></div>
+                </>
               )}
             </div>
           </>

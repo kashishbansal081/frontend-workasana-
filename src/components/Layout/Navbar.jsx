@@ -13,16 +13,16 @@ export default function Navbar() {
           <Link className="active" to="/">Dashboard</Link>
         </li>
         <li>
-          <Link to="/projects">Project</Link>
+          <Link to="/projects">Projects</Link>
         </li>
         <li>
-          <Link to="/teams">Team</Link>
+          <Link to="/teams">Teams</Link>
         </li>
         <li>
           <Link to="/reports">Reports</Link>
         </li>
         <li>
-          <Link to="/settings">Setting</Link>
+          <Link to="/settings">Settings</Link>
         </li>
       </ul>
     </div>

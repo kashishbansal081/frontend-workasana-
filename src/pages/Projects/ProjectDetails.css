@@ -22,8 +22,10 @@
 
 .project-details-header p {
   color: #6b7280;
-  margin-bottom: 0;
   line-height: 1.7;
+  margin-bottom: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .project-toolbar {
@@ -76,6 +78,30 @@
   white-space: nowrap;
 }
 
+.project-header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.project-status-box {
+ width: 240px;
+  flex-shrink: 0;
+}
+
+.project-status-box label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.project-status-box select {
+  border-radius: 10px;
+}
 
 @media (max-width: 992px) {
   .project-details-content {
@@ -97,55 +123,17 @@
   }
 }
 
-
 @media (max-width: 768px) {
-  .project-details-content {
-    padding: 16px;
-  }
-
-  .project-details-header h3 {
-    font-size: 24px;
-  }
-
-  .project-details-header p {
-    font-size: 14px;
-  }
-
-  .project-toolbar {
+  .project-header-top {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .sorting-buttons {
-    width: 100%;
-    flex-direction: column;
-  }
-
-  .sorting-buttons button {
+  .project-status-box {
     width: 100%;
   }
 
-  .project-toolbar-actions {
-    width: 100%;
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .project-toolbar-actions select {
-    width: 100%;
-  }
-
-  .new-task-btn {
-    width: 100%;
-  }
-
-  .table th,
-  .table td {
-    font-size: 14px;
-    white-space: nowrap;
-  }
-
-   .add-task-footer-btn{
+  .project-status-box select {
     width: 100%;
   }
 }
@@ -155,7 +143,7 @@
     padding: 12px;
   }
 
-  .add-task-footer-btn{
+  .add-task-footer-btn {
     width: 100%;
   }
 

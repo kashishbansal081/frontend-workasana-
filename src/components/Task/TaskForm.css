@@ -1,0 +1,31 @@
+.tags-container {
+display: flex;
+flex-wrap: wrap;
+gap: 8px;
+}
+
+.custom-tag {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: #e0e7ff;
+color: #3730a3;
+padding: 6px 10px;
+border-radius: 20px;
+font-size: 14px;
+font-weight: 500;
+}
+
+.tag-remove-btn {
+border: none;
+background: transparent;
+color: #3730a3;
+cursor: pointer;
+font-size: 16px;
+padding: 0;
+line-height: 1;
+}
+
+.tag-remove-btn:hover {
+color: #dc2626;
+}

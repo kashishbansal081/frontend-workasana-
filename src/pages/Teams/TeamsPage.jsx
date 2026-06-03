@@ -8,14 +8,11 @@ export default function TeamsPage() {
   const [users, setUsers] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
 
-  const [loadingTeams, setLoadingTeams] =
-    useState(true);
+  const [loadingTeams, setLoadingTeams] = useState(true);
 
-  const [loadingTeamDetails, setLoadingTeamDetails] =
-    useState(false);
+  const [loadingTeamDetails, setLoadingTeamDetails] = useState(false);
 
-  const [newTeamModalOpen, setNewTeamModalOpen] =
-    useState(false);
+  const [newTeamModalOpen, setNewTeamModalOpen] = useState(false);
 
   const [teamName, setTeamName] = useState("");
   const [description, setDescription] = useState("");
@@ -74,12 +71,9 @@ export default function TeamsPage() {
     try {
       setLoadingTeamDetails(true);
 
-      const res = await fetch(
-        `${API.teams}/${id}`,
-        {
-          headers: authHeaders,
-        },
-      );
+      const res = await fetch(`${API.teams}/${id}`, {
+        headers: authHeaders,
+      });
 
       const data = await res.json();
 
@@ -110,9 +104,7 @@ export default function TeamsPage() {
   };
 
   const removeMember = (userId) => {
-    const filtered = members.filter(
-      (id) => id !== userId,
-    );
+    const filtered = members.filter((id) => id !== userId);
 
     setMembers(filtered);
   };
@@ -171,18 +163,15 @@ export default function TeamsPage() {
         newMember,
       ];
 
-      const response = await fetch(
-        `${API.teams}/${selectedTeam._id}`,
-        {
-          method: "PUT",
+      const response = await fetch(`${API.teams}/${selectedTeam._id}`, {
+        method: "PUT",
 
-          headers: authHeaders,
+        headers: authHeaders,
 
-          body: JSON.stringify({
-            members: updatedMembers,
-          }),
-        },
-      );
+        body: JSON.stringify({
+          members: updatedMembers,
+        }),
+      });
 
       const data = await response.json();
 
@@ -199,9 +188,7 @@ export default function TeamsPage() {
     }
   };
 
-  const removeExistingMember = async (
-    memberId,
-  ) => {
+  const removeExistingMember = async (memberId) => {
     try {
       const response = await fetch(
         `${API.teams}/${selectedTeam._id}/members/${memberId}`,
@@ -243,9 +230,7 @@ export default function TeamsPage() {
 
               <button
                 className="teams-btn-primary"
-                onClick={() =>
-                  setNewTeamModalOpen(true)
-                }
+                onClick={() => setNewTeamModalOpen(true)}
               >
                 + New Team
               </button>
@@ -253,7 +238,11 @@ export default function TeamsPage() {
 
             {loadingTeams ? (
               <div className="teams-empty">
-                <h3>Loading teams...</h3>
+                <div className="teams-loader-container">
+                  <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Loading teams...</span>
+                  </div>
+                </div>
               </div>
             ) : teams.length === 0 ? (
               <div className="teams-empty">
@@ -267,9 +256,7 @@ export default function TeamsPage() {
                   <div
                     key={team._id}
                     className="teams-card"
-                    onClick={() =>
-                      handleTeamClick(team._id)
-                    }
+                    onClick={() => handleTeamClick(team._id)}
                   >
                     <div className="teams-card-top">
                       <div className="teams-avatar">
@@ -284,8 +271,7 @@ export default function TeamsPage() {
                     <h3>{team.name}</h3>
 
                     <p className="teams-description">
-                      {team.description ||
-                        "No description"}
+                      {team.description || "No description"}
                     </p>
                   </div>
                 ))}
@@ -293,7 +279,11 @@ export default function TeamsPage() {
             )}
           </>
         ) : loadingTeamDetails ? (
-          <h3>Loading team details...</h3>
+          <div className="teams-loader-container">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading team details...</span>
+            </div>
+          </div>
         ) : (
           <>
             <button
@@ -309,16 +299,13 @@ export default function TeamsPage() {
               </div>
 
               <div>
-                <h3 className="mb-0">
-                  {selectedTeam.name}
-                </h3>
+                <h3 className="mb-0">{selectedTeam.name}</h3>
 
                 <p
                   className="mb-0 text-muted mt-1"
                   style={{ fontSize: "14px" }}
                 >
-                  {selectedTeam.members?.length || 0}{" "}
-                  members
+                  {selectedTeam.members?.length || 0} members
                 </p>
 
                 <p
@@ -337,9 +324,7 @@ export default function TeamsPage() {
                 <div className="teams-member-row-view">
                   <div className="teams-member-left">
                     <div className="teams-avatar small">
-                      {getInitials(
-                        selectedTeam.owner?.name,
-                      )}
+                      {getInitials(selectedTeam.owner?.name)}
                     </div>
 
                     <div>
@@ -347,9 +332,7 @@ export default function TeamsPage() {
                         {selectedTeam.owner?.name}
                       </p>
 
-                      <p className="teams-member-role">
-                        Team Owner
-                      </p>
+                      <p className="teams-member-role">Team Owner</p>
                     </div>
                   </div>
                 </div>
@@ -364,27 +347,19 @@ export default function TeamsPage() {
                   <select
                     className="teams-input small"
                     value={newMember}
-                    onChange={(e) =>
-                      setNewMember(e.target.value)
-                    }
+                    onChange={(e) => setNewMember(e.target.value)}
                   >
-                    <option value="">
-                      Select User
-                    </option>
+                    <option value="">Select User</option>
 
                     {users
                       .filter(
                         (user) =>
                           !selectedTeam.members.some(
-                            (member) =>
-                              member._id === user._id,
+                            (member) => member._id === user._id,
                           ),
                       )
                       .map((user) => (
-                        <option
-                          key={user._id}
-                          value={user._id}
-                        >
+                        <option key={user._id} value={user._id}>
                           {user.name}
                         </option>
                       ))}
@@ -400,33 +375,22 @@ export default function TeamsPage() {
               </div>
 
               {selectedTeam.members?.map((member) => (
-                <div
-                  key={member._id}
-                  className="teams-member-row-view"
-                >
+                <div key={member._id} className="teams-member-row-view">
                   <div className="teams-member-left">
                     <div className="teams-avatar small">
                       {getInitials(member.name)}
                     </div>
 
                     <div>
-                      <p className="teams-member-name">
-                        {member.name}
-                      </p>
+                      <p className="teams-member-name">{member.name}</p>
 
-                      <p className="teams-member-role">
-                        Team Member
-                      </p>
+                      <p className="teams-member-role">Team Member</p>
                     </div>
                   </div>
 
                   <button
                     className="teams-remove-btn"
-                    onClick={() =>
-                      removeExistingMember(
-                        member._id,
-                      )
-                    }
+                    onClick={() => removeExistingMember(member._id)}
                   >
                     Remove
                   </button>
@@ -445,9 +409,7 @@ export default function TeamsPage() {
 
               <button
                 className="teams-close-btn"
-                onClick={() =>
-                  setNewTeamModalOpen(false)
-                }
+                onClick={() => setNewTeamModalOpen(false)}
               >
                 ✕
               </button>
@@ -459,41 +421,28 @@ export default function TeamsPage() {
                 placeholder="Team Name"
                 className="teams-input"
                 value={teamName}
-                onChange={(e) =>
-                  setTeamName(e.target.value)
-                }
+                onChange={(e) => setTeamName(e.target.value)}
               />
 
               <textarea
                 placeholder="Team Description"
                 className="teams-textarea"
                 value={description}
-                onChange={(e) =>
-                  setDescription(e.target.value)
-                }
+                onChange={(e) => setDescription(e.target.value)}
               />
 
               <div>
-                <label className="teams-label">
-                  Select Owner
-                </label>
+                <label className="teams-label">Select Owner</label>
 
                 <select
                   className="teams-input"
                   value={owner}
-                  onChange={(e) =>
-                    setOwner(e.target.value)
-                  }
+                  onChange={(e) => setOwner(e.target.value)}
                 >
-                  <option value="">
-                    Select Owner
-                  </option>
+                  <option value="">Select Owner</option>
 
                   {users.map((user) => (
-                    <option
-                      key={user._id}
-                      value={user._id}
-                    >
+                    <option key={user._id} value={user._id}>
                       {user.name}
                     </option>
                   ))}
@@ -501,25 +450,16 @@ export default function TeamsPage() {
               </div>
 
               <div>
-                <label className="teams-label">
-                  Add Members
-                </label>
+                <label className="teams-label">Add Members</label>
 
                 <select
                   className="teams-input"
-                  onChange={(e) =>
-                    addMember(e.target.value)
-                  }
+                  onChange={(e) => addMember(e.target.value)}
                 >
-                  <option value="">
-                    Select Team Member
-                  </option>
+                  <option value="">Select Team Member</option>
 
                   {users.map((user) => (
-                    <option
-                      key={user._id}
-                      value={user._id}
-                    >
+                    <option key={user._id} value={user._id}>
                       {user.name}
                     </option>
                   ))}
@@ -528,24 +468,13 @@ export default function TeamsPage() {
 
               <div className="teams-selected-members">
                 {members.map((memberId) => {
-                  const user = users.find(
-                    (u) => u._id === memberId,
-                  );
+                  const user = users.find((u) => u._id === memberId);
 
                   return (
-                    <div
-                      key={memberId}
-                      className="teams-member-pill"
-                    >
+                    <div key={memberId} className="teams-member-pill">
                       {user?.name}
 
-                      <button
-                        onClick={() =>
-                          removeMember(memberId)
-                        }
-                      >
-                        ✕
-                      </button>
+                      <button onClick={() => removeMember(memberId)}>✕</button>
                     </div>
                   );
                 })}

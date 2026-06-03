@@ -6,46 +6,35 @@ import { API } from "../../services/Api";
 import { useContext } from "react";
 import { AppContext } from "../../context/AppContext";
 import "./ProjectDetails.css";
+import axios from "axios";
 
 export default function ProjectDetailsPage() {
   const { id } = useParams();
 
   const navigate = useNavigate();
-
   const { refersh, setAddTaskModalOpen } = useContext(AppContext);
-
   const { data: project } = useFetch(`${API.projects}/${id}`);
-
   const { data: tasks } = useFetch(API.tasks, refersh);
-
   const [statusFilter, setStatusFilter] = useState("all");
-
   const [btnFilter, setBtnFilter] = useState("priority-low-high");
+  const token = localStorage.getItem("token");
 
   const sortTasks = (tasksArray) => {
     switch (btnFilter) {
       case "priority-low-high":
-        return tasksArray.sort((a, b) =>
-          a.priority.localeCompare(b.priority),
-        );
+        return tasksArray.sort((a, b) => a.priority.localeCompare(b.priority));
 
       case "priority-high-low":
-        return tasksArray.sort((a, b) =>
-          b.priority.localeCompare(a.priority),
-        );
+        return tasksArray.sort((a, b) => b.priority.localeCompare(a.priority));
 
       case "newest-first":
         return tasksArray.sort(
-          (a, b) =>
-            new Date(b.createdAt) -
-            new Date(a.createdAt),
+          (a, b) => new Date(b.createdAt) - new Date(a.createdAt),
         );
 
       case "oldest-first":
         return tasksArray.sort(
-          (a, b) =>
-            new Date(a.createdAt) -
-            new Date(b.createdAt),
+          (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
         );
 
       default:
@@ -56,17 +45,34 @@ export default function ProjectDetailsPage() {
   const filteredTasks = tasks
     ? sortTasks(
         tasks.filter((task) => {
-          const matchesProject =
-            task.project && task.project._id === id;
+          const matchesProject = task.project && task.project._id === id;
 
           const matchesStatus =
-            statusFilter === "all" ||
-            task.status === statusFilter;
+            statusFilter === "all" || task.status === statusFilter;
 
           return matchesProject && matchesStatus;
         }),
       )
     : [];
+
+  const updateProjectStatus = async (status) => {
+    try {
+      await axios.patch(
+        `${API.projects}/${id}/status`,
+        { status },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        },
+      );
+
+      window.location.reload();
+    } catch (error) {
+      console.error(error.response?.data || error);
+    }
+  };
 
   return (
     <div className="container-fluid project-details-wrapper">
@@ -79,7 +85,24 @@ export default function ProjectDetailsPage() {
           {project && (
             <>
               <div className="project-details-header">
-                <h3>{project.name}</h3>
+                <div className="project-header-top">
+                  <h3>{project.name}</h3>
+
+                  <div className="project-status-box">
+                    <label>Project Status</label>
+
+                    <select
+                      className="form-select"
+                      value={project.status}
+                      onChange={(e) => updateProjectStatus(e.target.value)}
+                    >
+                      <option value="To Do">To Do</option>
+                      <option value="In Progress">In Progress</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Blocked">Blocked</option>
+                    </select>
+                  </div>
+                </div>
 
                 <p>{project.description}</p>
               </div>
@@ -88,36 +111,28 @@ export default function ProjectDetailsPage() {
                 <div className="sorting-buttons">
                   <button
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() =>
-                      setBtnFilter("priority-low-high")
-                    }
+                    onClick={() => setBtnFilter("priority-low-high")}
                   >
                     Priority Low-High
                   </button>
 
                   <button
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() =>
-                      setBtnFilter("priority-high-low")
-                    }
+                    onClick={() => setBtnFilter("priority-high-low")}
                   >
                     Priority High-Low
                   </button>
 
                   <button
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() =>
-                      setBtnFilter("newest-first")
-                    }
+                    onClick={() => setBtnFilter("newest-first")}
                   >
                     Newest First
                   </button>
 
                   <button
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() =>
-                      setBtnFilter("oldest-first")
-                    }
+                    onClick={() => setBtnFilter("oldest-first")}
                   >
                     Oldest First
                   </button>
@@ -126,25 +141,15 @@ export default function ProjectDetailsPage() {
                 <div className="project-toolbar-actions">
                   <select
                     className="form-select form-select-sm"
-                    onChange={(e) =>
-                      setStatusFilter(e.target.value)
-                    }
+                    onChange={(e) => setStatusFilter(e.target.value)}
                   >
-                    <option value="all">
-                      Filter by Status
-                    </option>
+                    <option value="all">Filter by Status</option>
 
-                    <option value="In Progress">
-                      In Progress
-                    </option>
+                    <option value="In Progress">In Progress</option>
 
-                    <option value="Completed">
-                      Completed
-                    </option>
+                    <option value="Completed">Completed</option>
 
-                    <option value="Blocked">
-                      Blocked
-                    </option>
+                    <option value="Blocked">Blocked</option>
                   </select>
                 </div>
               </div>
@@ -152,9 +157,7 @@ export default function ProjectDetailsPage() {
           )}
 
           {filteredTasks.length === 0 ? (
-            <p className="text-muted">
-              No tasks found for this project.
-            </p>
+            <p className="text-muted">No tasks found for this project.</p>
           ) : (
             <>
               <div className="table-responsive project-table-wrapper">
@@ -173,22 +176,15 @@ export default function ProjectDetailsPage() {
                     {filteredTasks.map((task) => {
                       const dueDate = new Date(
                         new Date(task.createdAt).getTime() +
-                          task.timeToComplete *
-                            24 *
-                            60 *
-                            60 *
-                            1000,
+                          task.timeToComplete * 24 * 60 * 60 * 1000,
                       );
 
-                      const isOverdue =
-                        dueDate < new Date();
+                      const isOverdue = dueDate < new Date();
 
                       return (
                         <tr
                           key={task._id}
-                          onClick={() =>
-                            navigate(`/task/${task._id}`)
-                          }
+                          onClick={() => navigate(`/task/${task._id}`)}
                           style={{
                             cursor: "pointer",
                           }}
@@ -198,8 +194,7 @@ export default function ProjectDetailsPage() {
                           <td>
                             {task.owners
                               ?.map((owner) => owner.name)
-                              .join(", ") ||
-                              "Unassigned"}
+                              .join(", ") || "Unassigned"}
                           </td>
 
                           <td>
@@ -207,8 +202,7 @@ export default function ProjectDetailsPage() {
                               className={`badge ${
                                 task.priority === "High"
                                   ? "bg-danger"
-                                  : task.priority ===
-                                      "Medium"
+                                  : task.priority === "Medium"
                                     ? "bg-warning"
                                     : "bg-success"
                               }`}
@@ -219,9 +213,7 @@ export default function ProjectDetailsPage() {
 
                           <td
                             style={{
-                              color: isOverdue
-                                ? "red"
-                                : "black",
+                              color: isOverdue ? "red" : "black",
                             }}
                           >
                             {dueDate.toLocaleDateString()}
@@ -230,11 +222,9 @@ export default function ProjectDetailsPage() {
                           <td>
                             <span
                               className={`badge ${
-                                task.status ===
-                                "Completed"
+                                task.status === "Completed"
                                   ? "bg-success"
-                                  : task.status ===
-                                      "In Progress"
+                                  : task.status === "In Progress"
                                     ? "bg-primary"
                                     : "bg-secondary"
                               }`}
@@ -252,9 +242,7 @@ export default function ProjectDetailsPage() {
               <div className="task-action-footer mt-3 d-flex justify-content-end">
                 <button
                   className="btn btn-primary add-task-footer-btn"
-                  onClick={() =>
-                    setAddTaskModalOpen(true)
-                  }
+                  onClick={() => setAddTaskModalOpen(true)}
                 >
                   + New Task
                 </button>

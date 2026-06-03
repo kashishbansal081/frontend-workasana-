@@ -1,4 +1,3 @@
-
 .teams-page {
   min-height: 100vh;
   background: #f5f7fb;
@@ -61,20 +60,19 @@
 .teams-card {
   background: white;
   border-radius: 16px;
-  padding: 20px;
+  padding: 16px;
   cursor: pointer;
   border: 1px solid #ececec;
   transition: 0.2s ease;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
-  height: 100%;
+  height: 220px;
   overflow: hidden;
 }
 
 .teams-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 20px rgba(0,0,0,0.08);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.08);
 }
 
 .teams-card-top {
@@ -85,29 +83,34 @@
 }
 
 .teams-card h3 {
-  margin: 16px 0 10px;
-  word-break: break-word;
+  margin: 14px 0 8px;
+  line-height: 1.4;
+  font-size: 18px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 50px;
 }
-
 .teams-description {
   color: #666;
   font-size: 14px;
-  line-height: 1.7;
-  overflow-wrap: break-word;
-  word-break: break-word;
+  line-height: 1.5;
+
   display: -webkit-box;
-  -webkit-line-clamp: 6;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .teams-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
   align-items: stretch;
 }
-
 
 .teams-count {
   background: #ede9fe;
@@ -144,7 +147,6 @@
   font-size: 14px;
 }
 
-/* EMPTY */
 
 .teams-empty {
   text-align: center;
@@ -152,7 +154,18 @@
   color: gray;
 }
 
-/* BACK */
+.teams-loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 350px;
+}
+
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
 
 .teams-back-btn {
   border: none;
@@ -212,7 +225,7 @@
 .teams-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.45);
+  background: rgba(0, 0, 0, 0.45);
 
   display: flex;
   justify-content: center;
@@ -226,7 +239,7 @@
   background: white;
   border-radius: 18px;
   padding: 24px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 
   animation: teamsPopup 0.2s ease;
 }
@@ -353,6 +366,10 @@
     width: calc(100% - 260px);
     padding: 1.5rem;
   }
+
+   .teams-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 @media (max-width: 992px) {
@@ -366,8 +383,8 @@
     padding: 1rem;
   }
 
-  .teams-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -398,7 +415,7 @@
     width: 100%;
   }
 
-  .teams-grid {
+ .teams-grid {
     grid-template-columns: 1fr;
   }
 
@@ -453,4 +470,3 @@
 .teams-remove-btn:hover {
   background: #fecaca;
 }
-
