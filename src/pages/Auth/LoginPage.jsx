@@ -34,7 +34,6 @@ const LoginPage = () => {
     })
       .then((response) => {
         if (!response.ok) {
-          toast.error("Invalid email or password!");
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         return response.json();
