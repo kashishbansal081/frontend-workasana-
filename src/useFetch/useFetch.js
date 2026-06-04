@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 
 const useFetch = (url, refreshTrigger) => {
   const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = () => {
+      setLoading(true);
       const token = localStorage.getItem("token");
 
       const headers = {
@@ -32,13 +34,15 @@ const useFetch = (url, refreshTrigger) => {
         })
         .catch((error) => {
           console.error("Error fetching data:", error);
+        }).finally(() => {
+          setLoading(false);
         });
     };
 
     fetchData();
   }, [url, refreshTrigger]);
 
-  return { data };
+  return { data, loading };
 };
 
 export default useFetch;

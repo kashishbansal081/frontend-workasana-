@@ -13,8 +13,8 @@ export default function ProjectDetailsPage() {
 
   const navigate = useNavigate();
   const { refersh, setAddTaskModalOpen } = useContext(AppContext);
-  const { data: project } = useFetch(`${API.projects}/${id}`);
-  const { data: tasks } = useFetch(API.tasks, refersh);
+  const { data: project , loading: projectLoading } = useFetch(`${API.projects}/${id}`);
+  const { data: tasks, loading: tasksLoading } = useFetch(API.tasks, refersh);
   const [statusFilter, setStatusFilter] = useState("all");
   const [btnFilter, setBtnFilter] = useState("priority-low-high");
   const token = localStorage.getItem("token");
@@ -74,12 +74,24 @@ export default function ProjectDetailsPage() {
     }
   };
 
+  
+
   return (
     <div className="container-fluid project-details-wrapper">
       <div className="row">
         <div className="col-12 col-md-3 p-0">
           <SideBar />
         </div>
+
+        {
+          (projectLoading ) && (
+            <div className="col-12 col-md-9 d-flex justify-content-center align-items-center" style={{ height: "80vh" }}>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          )
+        }
 
         <div className="col-12 col-md-9 project-details-content">
           {project && (
@@ -156,7 +168,14 @@ export default function ProjectDetailsPage() {
             </>
           )}
 
-          {filteredTasks.length === 0 ? (
+          { tasksLoading ? (
+            <div className="d-flex justify-content-center align-items-center" style={{ height: "50vh" }}>
+              <div className="spinner-border text-primary" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) :
+           filteredTasks.length === 0 ? (
             <p className="text-muted">No tasks found for this project.</p>
           ) : (
             <>
