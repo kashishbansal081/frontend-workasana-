@@ -7,9 +7,9 @@ import { AppContext } from "../../context/AppContext";
 import "./Project.css";
 
 export default function ProjectsPage() {
-  const { setAddProjectModalOpen } = useContext(AppContext);
+  const { setAddProjectModalOpen, refersh } = useContext(AppContext);
 
-  const { data: projects } = useFetch(API.projects);
+  const { data: projects, loading: projectsLoading } = useFetch(API.projects, refersh);
 
   return (
     <div className="container-fluid projects-page">
@@ -37,11 +37,18 @@ export default function ProjectsPage() {
           </div>
 
           <div className="row g-4 mt-1">
-            {!projects ? (
-              <p className="text-muted">
-                Loading projects...
-              </p>
-            ) : projects.length > 0 ? (
+            {projectsLoading ? (
+              <div
+                className="d-flex justify-content-center align-items-center"
+                style={{ height: "50vh" }}
+              >
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : !projects || projects.length === 0 ? (
+              <p className="text-muted">No projects found.</p>
+            ) : (
               projects.map((project) => (
                 <div className="col-12" key={project._id}>
                   <Link
@@ -51,9 +58,7 @@ export default function ProjectsPage() {
                     <div className="card border-0 shadow-sm project-list-card">
                       <div className="project-card-content">
                         <div className="project-info">
-                          <h4 className="project-name">
-                            {project.name}
-                          </h4>
+                          <h4 className="project-name">{project.name}</h4>
 
                           <p className="project-description">
                             {project.description}
@@ -65,10 +70,10 @@ export default function ProjectsPage() {
                                 project.status === "Completed"
                                   ? "bg-success"
                                   : project.status === "In Progress"
-                                  ? "bg-primary"
-                                  : project.status === "Blocked"
-                                  ? "bg-danger"
-                                  : "bg-secondary"
+                                    ? "bg-primary"
+                                    : project.status === "Blocked"
+                                      ? "bg-danger"
+                                      : "bg-secondary"
                               }`}
                             >
                               {project.status}
@@ -76,9 +81,7 @@ export default function ProjectsPage() {
 
                             <span className="project-date">
                               Created:{" "}
-                              {new Date(
-                                project.createdAt,
-                              ).toLocaleDateString()}
+                              {new Date(project.createdAt).toLocaleDateString()}
                             </span>
                           </div>
                         </div>
@@ -87,10 +90,6 @@ export default function ProjectsPage() {
                   </Link>
                 </div>
               ))
-            ) : (
-              <p className="text-muted">
-                No projects found.
-              </p>
             )}
           </div>
         </div>
